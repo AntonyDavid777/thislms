@@ -105,7 +105,7 @@ def create_course():
             thumbnail_url=data.get('thumbnail_url', ''),
         )
         
-        return success_response({'course': course.to_dict()}, 'Course created successfully', 201), 201
+        return success_response({'course': course.to_dict()}, 'Course created successfully', 201)
     
     except Exception as e:
         return error_response(str(e), 500)
@@ -187,7 +187,7 @@ def enroll_course(course_id):
         
         enrollment = service.enroll_student(user_id, course_id)
         
-        return success_response({'enrollment': enrollment.to_dict()}, 'Successfully enrolled in course', 201), 201
+        return success_response({'enrollment': enrollment.to_dict()}, 'Successfully enrolled in course', 201)
     
     except (ConflictError, NotFoundError) as e:
         status_code = 409 if isinstance(e, ConflictError) else 404
@@ -297,7 +297,7 @@ def add_lesson(course_id):
             resources_url=data.get('resources_url', []),
         )
         
-        return success_response({'lesson': lesson.to_dict()}, 'Lesson created successfully', 201), 201
+        return success_response({'lesson': lesson.to_dict()}, 'Lesson created successfully', 201)
     
     except (ValidationError, NotFoundError) as e:
         status_code = 400 if isinstance(e, ValidationError) else 404

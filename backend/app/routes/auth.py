@@ -86,7 +86,7 @@ def register():
         return success_response({
             'user': user.to_dict(),
             **tokens
-        }, 'User registered successfully', 201), 201
+        }, 'User registered successfully', 201)
     
     except Exception as e:
         return error_response(str(e), 500)

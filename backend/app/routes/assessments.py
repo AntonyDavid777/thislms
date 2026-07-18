@@ -92,7 +92,7 @@ def create_assessment():
             is_published=data.get('is_published', False),
         )
         
-        return success_response({'assessment': assessment.to_dict()}, 'Assessment created successfully', 201), 201
+        return success_response({'assessment': assessment.to_dict()}, 'Assessment created successfully', 201)
     
     except Exception as e:
         return error_response(str(e), 500)
@@ -200,7 +200,7 @@ def add_question(assessment_id):
             correct_answer=data.get('correct_answer'),
         )
         
-        return success_response({'question': question.to_dict()}, 'Question added successfully', 201), 201
+        return success_response({'question': question.to_dict()}, 'Question added successfully', 201)
     
     except (ValidationError, NotFoundError) as e:
         status_code = 400 if isinstance(e, ValidationError) else 404
@@ -232,7 +232,7 @@ def submit_assessment(assessment_id):
         # Submit the assessment
         submission = service.submit_assessment(user_id, assessment_id, answers)
         
-        return success_response({'submission': submission.to_dict()}, 'Assessment submitted successfully', 201), 201
+        return success_response({'submission': submission.to_dict()}, 'Assessment submitted successfully', 201)
     
     except (ValidationError, NotFoundError, ConflictError) as e:
         if isinstance(e, ConflictError):

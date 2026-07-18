@@ -44,7 +44,7 @@ def error_response(message, status_code=400, errors=None):
     """Format error response"""
     response = {
         'success': False,
-        'error': message,
+        'message': message,
         'status_code': status_code,
     }
     if errors:

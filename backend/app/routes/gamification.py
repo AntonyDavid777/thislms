@@ -50,7 +50,7 @@ def create_badge():
             requirement_value=data.get('requirement_value', 0)
         )
         
-        return success_response({'badge': badge.to_dict()}, 'Badge created successfully', 201), 201
+        return success_response({'badge': badge.to_dict()}, 'Badge created successfully', 201)
     
     except ValidationError as e:
         return error_response(str(e), 400)

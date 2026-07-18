@@ -23,7 +23,7 @@ def start_lesson(lesson_id):
         service = ProgressService(current_app.db)
         progress = service.start_lesson(student_id, lesson_id, course_id)
         
-        return success_response({'progress': progress.to_dict()}, 'Lesson started successfully', 201), 201
+        return success_response({'progress': progress.to_dict()}, 'Lesson started successfully', 201)
     
     except Exception as e:
         return error_response(str(e), 500)
