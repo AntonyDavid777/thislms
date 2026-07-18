@@ -86,7 +86,8 @@ class ApiClient {
     const data = await response.json()
 
     if (!response.ok) {
-      throw new ApiError(response.status, data.error || 'API Error', data)
+      const errorMessage = data.error || data.message || 'API Error'
+      throw new ApiError(response.status, errorMessage, data)
     }
 
     return data as T
@@ -231,6 +232,10 @@ class ApiClient {
 
   async unenrollCourse(courseId: string) {
     return this.delete(`/courses/${courseId}/unenroll`)
+  }
+
+  async getEnrolledStudents(courseId: string, page = 1, pageSize = 10) {
+    return this.get(`/courses/${courseId}/enrolled-students?page=${page}&page_size=${pageSize}`)
   }
 
   // Health check

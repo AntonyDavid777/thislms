@@ -64,8 +64,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (response?.data?.access_token) {
         localStorage.setItem('access_token', response.data.access_token)
         localStorage.setItem('refresh_token', response.data.refresh_token)
+        setUser(response?.data?.user || null)
+      } else {
+        throw new Error(response?.message || 'Registration failed')
       }
-      setUser(response?.data?.user || null)
     } finally {
       setIsLoading(false)
     }

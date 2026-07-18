@@ -31,10 +31,35 @@ export default function StudentsPage() {
     setError(null)
 
     try {
-      const response = await apiClient.listUsers(1, 100, UserRole.STUDENT) as any
-      setStudents(response?.data || [])
+      // Get the teacher's courses first
+      const coursesResponse = await apiClient.listCourses(1, 100) as any
+      const teacherCourses = coursesResponse?.data || []
+      
+      // Collect all enrolled students from all teacher's courses
+      const allStudents: any[] = []
+      const studentSet = new Set<string>()
+      
+      for (const course of teacherCourses) {
+        try {
+          const enrollmentsResponse = await apiClient.getEnrolledStudents(course._id, 1, 100) as any
+          const enrollments = enrollmentsResponse?.data || []
+          
+          enrollments.forEach((enrollment: any) => {
+            const studentId = enrollment.student_id || enrollment._id
+            if (studentId && !studentSet.has(studentId)) {
+              studentSet.add(studentId)
+              allStudents.push(enrollment)
+            }
+          })
+        } catch (err) {
+          console.error(`[v0] Failed to load students for course ${course._id}:`, err)
+        }
+      }
+      
+      setStudents(allStudents)
     } catch (err: any) {
       setError(err.message || 'Failed to load students')
+      console.error('[v0] Failed to load teacher students:', err)
     } finally {
       setIsLoadingStudents(false)
     }

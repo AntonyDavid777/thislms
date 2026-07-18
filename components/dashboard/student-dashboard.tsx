@@ -198,7 +198,7 @@ export function StudentDashboard() {
             <span className="text-sm font-medium">My Profile</span>
           </Link>
           <Link
-            href="/profile"
+            href="/analytics"
             className="flex items-center gap-3 p-3 rounded hover:bg-muted transition-colors"
           >
             <span className="text-xl">📊</span>
