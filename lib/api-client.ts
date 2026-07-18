@@ -238,6 +238,10 @@ class ApiClient {
     return this.get(`/courses/${courseId}/enrolled-students?page=${page}&page_size=${pageSize}`)
   }
 
+  async getInstructorCourses(instructorId: string, page = 1, pageSize = 10) {
+    return this.get(`/courses?instructor_id=${instructorId}&page=${page}&page_size=${pageSize}`)
+  }
+
   // Health check
   async healthCheck() {
     return this.get('/health', { includeAuth: false })

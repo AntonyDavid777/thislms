@@ -18,6 +18,7 @@ def list_courses():
         category = request.args.get('category')
         level = request.args.get('level')
         search = request.args.get('search')
+        instructor_id = request.args.get('instructor_id')
         
         # Validate pagination
         if page < 1:
@@ -27,18 +28,23 @@ def list_courses():
         
         service = CourseService(current_app.db)
         
-        filters = {}
-        if category:
-            filters['category'] = category
-        if level:
-            filters['level'] = level
-        if search:
-            filters['search'] = search
+        # If filtering by instructor, only get that instructor's courses
+        if instructor_id:
+            courses, total = service.get_courses_by_instructor(instructor_id, page, page_size)
+        else:
+            filters = {}
+            if category:
+                filters['category'] = category
+            if level:
+                filters['level'] = level
+            if search:
+                filters['search'] = search
+            
+            # Non-authenticated users can only see published courses
+            status = 'published' if not get_current_user() else None
+            
+            courses, total = service.list_courses(page, page_size, filters, status)
         
-        # Non-authenticated users can only see published courses
-        status = 'published' if not get_current_user() else None
-        
-        courses, total = service.list_courses(page, page_size, filters, status)
         courses_data = [course.to_dict() for course in courses]
         
         return paginated_response(courses_data, total, page, page_size, 'Courses retrieved successfully')

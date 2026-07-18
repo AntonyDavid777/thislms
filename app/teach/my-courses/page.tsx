@@ -31,7 +31,11 @@ export default function MyCoursesPage() {
     setError(null)
 
     try {
-      const response = await apiClient.listCourses(1, 100) as any
+      if (!user?._id) {
+        throw new Error('User ID not found')
+      }
+
+      const response = await apiClient.getInstructorCourses(user._id, 1, 100) as any
       setCourses(response?.data || [])
     } catch (err: any) {
       setError(err.message || 'Failed to load courses')
