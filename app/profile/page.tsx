@@ -51,10 +51,18 @@ export default function ProfilePage() {
         throw new Error('User ID not found')
       }
 
-      await apiClient.updateUser(user._id, {
+      const response = await apiClient.updateUser(user._id, {
         name: formData.name,
         bio: formData.bio,
-      })
+      }) as any
+
+      // Update the form data with the response to ensure UI reflects server state
+      if (response?.data?.user) {
+        setFormData({
+          name: response.data.user.name || formData.name,
+          bio: response.data.user.bio || formData.bio,
+        })
+      }
 
       setSuccess('Profile updated successfully')
       setIsEditing(false)

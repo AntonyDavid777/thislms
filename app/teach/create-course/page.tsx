@@ -53,7 +53,7 @@ export default function CreateCoursePage() {
         status: 'draft',
       }) as any
 
-      const courseId = response?.data?._id
+      const courseId = response?.data?.course?._id
       if (courseId) {
         router.push(`/teach/courses/${courseId}`)
       } else {
