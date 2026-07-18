@@ -217,12 +217,15 @@ export default function ProfilePage() {
                           {isSaving ? 'Saving...' : 'Save Changes'}
                         </button>
                         <button
+                          type="button"
                           onClick={() => {
                             setIsEditing(false)
                             setFormData({
                               name: user?.name || '',
                               bio: user?.bio || '',
                             })
+                            setError(null)
+                            setSuccess(null)
                           }}
                           className="rounded-lg border border-border px-4 py-2 text-sm font-medium hover:bg-muted transition-colors"
                         >

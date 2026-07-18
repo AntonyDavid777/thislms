@@ -26,13 +26,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       try {
         const token = localStorage.getItem('access_token')
         if (token) {
-          const response = await apiClient.getCurrentUser() as any
-          setUser(response?.data?.user || null)
+          try {
+            const response = await apiClient.getCurrentUser() as any
+            setUser(response?.data?.user || null)
+          } catch (error: any) {
+            // Token is invalid or expired, clear it
+            localStorage.removeItem('access_token')
+            localStorage.removeItem('refresh_token')
+            setUser(null)
+          }
         }
-      } catch (error) {
-        console.error('Failed to initialize auth:', error)
-        localStorage.removeItem('access_token')
-        localStorage.removeItem('refresh_token')
       } finally {
         setIsLoading(false)
       }
