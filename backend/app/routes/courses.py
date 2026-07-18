@@ -63,9 +63,19 @@ def get_course(course_id):
         # Check if user has access to see this course
         user_id = get_current_user()
         user_data = g.user_data if hasattr(g, 'user_data') else {}
+        user_role = user_data.get('role')
         
-        if course.status == 'draft' and user_id != str(course.instructor_id) and user_data.get('role') != UserRole.ADMIN.value:
-            return error_response('This course is not available', 404)
+        # Draft courses are only visible to their instructor and admins
+        if course.status == 'draft':
+            # Check if current user is the instructor
+            if user_id and user_id == str(course.instructor_id):
+                pass  # Allow access
+            # Check if current user is an admin
+            elif user_role == UserRole.ADMIN.value:
+                pass  # Allow access
+            else:
+                # Not authorized to view this draft course
+                return error_response('This course is not available', 404)
         
         course_data = course.to_dict(include_lesson_ids=True)
         
@@ -75,7 +85,7 @@ def get_course(course_id):
         
         return success_response({'course': course_data}, 'Course retrieved successfully')
     
-    except NotFoundError as e:
+    except (NotFoundError, ValueError) as e:
         return error_response(str(e), 404)
     except Exception as e:
         return error_response(str(e), 500)

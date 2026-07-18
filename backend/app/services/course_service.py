@@ -36,7 +36,13 @@ class CourseService:
     def get_course_by_id(self, course_id: str, include_lessons: bool = False):
         """Get course by ID"""
         try:
-            course_doc = self.courses_collection.find_one({'_id': ObjectId(course_id)})
+            # Convert string ID to ObjectId
+            try:
+                object_id = ObjectId(course_id)
+            except Exception:
+                raise ValueError(f'Invalid course ID format: {course_id}')
+            
+            course_doc = self.courses_collection.find_one({'_id': object_id})
             if not course_doc:
                 raise NotFoundError(f'Course {course_id} not found')
             
@@ -44,15 +50,13 @@ class CourseService:
             
             if include_lessons:
                 lessons_docs = self.lessons_collection.find(
-                    {'course_id': ObjectId(course_id)}
+                    {'course_id': object_id}
                 ).sort('order', 1)
                 course.lessons = [Lesson.from_mongo_dict(doc) for doc in lessons_docs]
             
             return course
-        except Exception as e:
-            if isinstance(e, NotFoundError):
-                raise
-            raise ValueError(f'Invalid course ID: {course_id}')
+        except (NotFoundError, ValueError):
+            raise
     
     def update_course(self, course_id: str, **kwargs):
         """Update course information"""
