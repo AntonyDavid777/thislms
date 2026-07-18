@@ -24,6 +24,10 @@ def create_app(config_name=None):
     app = Flask(__name__)
     app.config.from_object(config[config_name])
     
+    # Register custom JSON encoder for datetime serialization
+    from app.utils.responses import JSONEncoder
+    app.json_encoder = JSONEncoder
+    
     # Initialize CORS
     CORS(
         app,
